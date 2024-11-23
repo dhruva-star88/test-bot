@@ -4,7 +4,7 @@ from langchain.llms import HuggingFaceHub
 # Initialize Hugging Face API
 API_KEY = "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"
 llm = HuggingFaceHub(
-    repo_id="OpenAssistant/oasst-sft-1-pythia-12b",
+    repo_id="Qwen/Qwen2.5-72B-Instruct",
     huggingfacehub_api_token=API_KEY
 )
 
@@ -21,6 +21,13 @@ st.sidebar.info(
     Type your message in the input box and press Enter to chat.
     """
 )
+def clean_response(user_input, response):
+    """
+    Remove the user's input from the bot's response if it's repeated.
+    """
+    if response.lower().startswith(user_input.lower()):
+        return response[len(user_input):].strip()
+    return response.strip()
 
 # Input form for user
 with st.form("chat_form", clear_on_submit=True):
@@ -34,7 +41,8 @@ if submitted and user_input:
 
     # Get bot response
     with st.spinner("Thinking..."):
-        bot_response = llm(user_input)
+        raw_response = llm(user_input)
+        bot_response = clean_response(user_input, raw_response)
 
     # Append bot response to chat history
     st.session_state.messages.append({"role": "bot", "content": bot_response})
