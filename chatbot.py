@@ -1,8 +1,9 @@
+import os
 import streamlit as st
 from langchain.llms import HuggingFaceHub
 
 # Initialize Hugging Face API
-API_KEY = "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"
+API_KEY = os.getenv("Chat-bot")
 llm = HuggingFaceHub(
     repo_id="Qwen/Qwen2.5-72B-Instruct",
     huggingfacehub_api_token=API_KEY
